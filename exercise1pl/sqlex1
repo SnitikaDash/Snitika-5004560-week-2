@@ -1,0 +1,14 @@
+BEGIN
+  FOR customer_rec IN (
+    SELECT customer_id, loan_interest_rate
+    FROM customers
+    WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM birth_date) > 60
+  ) LOOP
+    UPDATE customers
+    SET loan_interest_rate = customer_rec.loan_interest_rate * 0.99
+    WHERE customer_id = customer_rec.customer_id;
+  END LOOP;
+  
+  COMMIT;
+END;
+/
