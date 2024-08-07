@@ -1,0 +1,23 @@
+DECLARE
+  CURSOR loan_cursor IS
+    SELECT customer_id, loan_id, due_date
+    FROM loans
+    WHERE due_date BETWEEN SYSDATE AND SYSDATE + 30;
+    
+  v_customer_id loans.customer_id%TYPE;
+  v_loan_id loans.loan_id%TYPE;
+  v_due_date loans.due_date%TYPE;
+
+BEGIN
+  OPEN loan_cursor;
+  LOOP
+    FETCH loan_cursor INTO v_customer_id, v_loan_id, v_due_date;
+    EXIT WHEN loan_cursor%NOTFOUND;
+
+    DBMS_OUTPUT.PUT_LINE('Reminder: Customer ' || v_customer_id || 
+                         ' has loan ' || v_loan_id || 
+                         ' due on ' || TO_CHAR(v_due_date, 'DD-MON-YYYY'));
+  END LOOP;
+  CLOSE loan_cursor;
+END;
+/
